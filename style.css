@@ -1,0 +1,47 @@
+h1 {
+    font-family: "Open Sans", sans-serif;
+}
+
+table {
+    width: 100%; 
+    max-width: 716px; 
+    border-collapse: collapse; 
+    table-layout: fixed; 
+}
+
+th, td {
+    border: 1px solid black;
+    text-align: center; 
+    padding: 8px; 
+    width: 14.28%;
+    height: 40px;
+}
+
+th:first-child, td:first-child {
+    width: 8%; 
+}
+
+th:not(:first-child), td:not(:first-child) {
+    width: 15.33%; 
+}
+
+@media (max-width: 768px) {
+    th, td {
+        font-size: 12px; 
+        padding: 5px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    th, td {
+        font-size: 10px;
+        padding: 3px;
+        height: 30px;
+    }
+}
+
+#name-input {
+    width: 215px;
+    padding: 1px;
+}
