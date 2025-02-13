@@ -111,6 +111,8 @@ function getTeacherList() {
 
 function makeTeacherDatalist() {
     const datalist = document.getElementById('teacher-list');
+
+    
     teacherList.forEach(([teacherCell]) => {
         const option = document.createElement('option');
         option.value = teacherCell;
@@ -130,7 +132,7 @@ function searchSchedule() {
 
     for (let i = 0; i < teacherList.length; i++) {
         let teacherCell = teacherList[i][0];
-        if (teacherCell.includes(teacherName) || matchAbbreviation(teacherCell, teacherName)) {
+        if (teacherCell.includes(teacherName)) {
             teacherSchedule = scheduleData.slice(teacherList[i][1], teacherList[i][1] + 16);
             found = true;
             console.log(teacherSchedule);
@@ -140,16 +142,9 @@ function searchSchedule() {
 
     if (!found) {
         alert("Không tìm thấy tkb giáo viên đã chọn");
-    } else {
+    } else { 
         displaySchedule();
     }
-}
-
-// hàm check viết tắt tên giáo viên
-function matchAbbreviation(fullName, abbreviation) {
-    const words = fullName.split(' ');
-    const abbreviationWords = words.map(word => word[0]).join('');
-    return abbreviationWords.includes(abbreviation);
 }
 
 // Hiển thị thời khóa biểu
@@ -223,3 +218,4 @@ document.getElementById('name-input').addEventListener('focus', () => {
     document.getElementById('name-input').value = '';
     document.getElementById('schedule-container').innerHTML = '';
 });
+
