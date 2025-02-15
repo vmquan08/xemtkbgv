@@ -15,6 +15,7 @@ let subjects = {
     "GDTC": "GDTC"
 };
 
+// lấy link tkb trên web
 async function getScheduleLink() {
     try {
         const baseUrl = "https://quan08corsproxy.quan20080108.workers.dev/https://thptbencat.edu.vn";
@@ -25,7 +26,6 @@ async function getScheduleLink() {
         const parser = new DOMParser();
         const html = parser.parseFromString(data, 'text/html');
         const div = html.querySelector('.col-sm-9');
-        console.log(div);
         if (div) {
             const scheduleLink = div.querySelector('a')?.getAttribute('href');
             console.log(scheduleLink);
