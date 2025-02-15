@@ -225,3 +225,4 @@ document.getElementById('name-input').addEventListener('focus', () => {
     document.getElementById('schedule-container').innerHTML = '';
 });
 
+let teacherList = [];
