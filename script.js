@@ -76,7 +76,7 @@ async function loadData() {
             );
             container.innerHTML = '';
             console.log("Dữ liệu đã tải:", scheduleData);
-            alert(scheduleData)
+            
 
             getTeacherList();
         } catch (error) {
