@@ -87,24 +87,22 @@ async function loadData() {
         alert("Không tìm thấy liên kết Google Sheets");
     }
 }
-
+// truy vấn danh sách giáo viên
 function getTeacherList() {
     let teacherMap = new Map();
 
     for (let i = 0; i < scheduleData.length; i++) {
-        // kiểm tra cột C có chữ "Giáo viên"
         if ((scheduleData[i][2] || "").trim().toLowerCase() === "giáo viên") {
             let teacherName = (scheduleData[i][3] || "").trim();
 
-            if (!teacherName) continue; // bỏ nếu rỗng
+            if (!teacherName) continue; 
 
             let blockStart = i;
 
-            // dò môn trong block (từ dòng kế tiếp)
             let foundSubject = null;
             outerLoop:
             for (let j = blockStart + 2; j < blockStart + 16 && j < scheduleData.length; j++) {
-                for (let k = 1; k < 7; k++) { // chỉ cột thứ 2–7 (Thứ 2 -> Thứ 7)
+                for (let k = 1; k < 7; k++) { 
                     if (!scheduleData[j] || scheduleData[j].length <= k) continue;
                     let cell = (scheduleData[j][k] || "").toLowerCase();
                     for (let key in subjects) {
