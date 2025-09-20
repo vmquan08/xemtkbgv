@@ -18,7 +18,7 @@ let subjects = {
 // lấy link tkb trên web
 async function getScheduleLink() {
     try {
-        const baseUrl = "https://quan08corsproxy.quan20080108.workers.dev/https://thptbencat.edu.vn";
+        const baseUrl = "https://tofproxy.trithucmo.site/url?target=https://thptbencat.edu.vn";
         
         const response = await fetch(baseUrl + "/category/thoi-khoa-bieu");
         const data = await response.text();
@@ -46,12 +46,13 @@ async function getScheduleLink() {
     }
 }
 let scheduleData = [];
+const sheet_name = 'TKBGiaovien';
 
 // Cái này để xuất dữ liệu từ link Google Sheets ra
 async function loadData() {
     const ggsheetLink = await getScheduleLink();
     if (ggsheetLink) {
-        const ggsheetCSVLink = ggsheetLink.replace("edit?usp=sharing", "gviz/tq?tqx=out:csv&sheet=TKBGiaovien");
+        const ggsheetCSVLink = ggsheetLink.replace(/\/edit.*$/, `/gviz/tq?tqx=out:csv&sheet=${sheet_name}`);
 
         const container = document.getElementById('schedule-container');
         container.innerHTML = 'Đang tải dữ liệu...';
@@ -64,7 +65,7 @@ async function loadData() {
         try {
             const response = await fetch(ggsheetCSVLink);
             const data = await response.text();
-
+            console.log("Dữ liệu tho:", data);
             // xử lí dữ liệu thô
             scheduleData = data.split('\n').map(row =>
                 row.split(',').map(cell => 
@@ -90,31 +91,42 @@ async function loadData() {
 function getTeacherList() {
     let teacherMap = new Map();
 
-    for (let i = 3; i < scheduleData.length; i+=16) {
-        let teacherName = scheduleData[i][3];
-        let foundSubject = null;
+    for (let i = 0; i < scheduleData.length; i++) {
+        // kiểm tra cột C có chữ "Giáo viên"
+        if ((scheduleData[i][2] || "").trim().toLowerCase() === "giáo viên") {
+            let teacherName = (scheduleData[i][3] || "").trim();
 
-        outerLoop: for (let j = i + 2; j < i + 16; j++) {
-            for (let k = 1; k < 7; k++) {
-                let cell = scheduleData[j][k].toLowerCase();
-                
-                for (let key in subjects) {
-                    if (cell.includes(key.toLowerCase())) {
-                        foundSubject = (subjects[key]);
-                        break outerLoop;
+            if (!teacherName) continue; // bỏ nếu rỗng
+
+            let blockStart = i;
+
+            // dò môn trong block (từ dòng kế tiếp)
+            let foundSubject = null;
+            outerLoop:
+            for (let j = blockStart + 2; j < blockStart + 16 && j < scheduleData.length; j++) {
+                for (let k = 1; k < 7; k++) { // chỉ cột thứ 2–7 (Thứ 2 -> Thứ 7)
+                    if (!scheduleData[j] || scheduleData[j].length <= k) continue;
+                    let cell = (scheduleData[j][k] || "").toLowerCase();
+                    for (let key in subjects) {
+                        if (cell.includes(key.toLowerCase())) {
+                            foundSubject = subjects[key];
+                            break outerLoop;
+                        }
                     }
                 }
             }
-        }
 
-        let teacherCell = foundSubject ? `${teacherName} - ${foundSubject}` : teacherName;
-        teacherMap.set(teacherCell, i);
+            let teacherCell = foundSubject ? `${teacherName} - ${foundSubject}` : teacherName;
+            teacherMap.set(teacherCell, blockStart);
+        }
     }
+
     teacherList = Array.from(teacherMap.entries());
-    console.log(teacherList);
+    console.log("Danh sách giáo viên:", teacherList);
     makeTeacherDatalist();
     return teacherList;
 }
+
 
 function makeTeacherDatalist() {
     const datalist = document.getElementById('teacher-list');
